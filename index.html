@@ -1,0 +1,1031 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UrbanThread — Clothing Store</title>
+
+  <style>
+    :root{
+      --bg:#0b0f14; --panel:#111826; --panel2:#0f1622;
+      --text:#e8eef7; --muted:#9ab0c9; --line:#1e2b3d;
+      --brand:#7c5cff; --brand2:#00d4ff; --danger:#ff4d6d;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 14px;
+      --max: 1150px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:var(--font); color:var(--text); background:
+      radial-gradient(1200px 700px at 20% 0%, rgba(124,92,255,.25), transparent 55%),
+      radial-gradient(900px 600px at 90% 10%, rgba(0,212,255,.18), transparent 55%),
+      radial-gradient(700px 500px at 50% 100%, rgba(255,77,109,.10), transparent 50%),
+      var(--bg);
+    }
+    a{color:inherit; text-decoration:none}
+    button, input, select{font:inherit}
+    .container{max-width:var(--max); margin:0 auto; padding:20px}
+
+    .nav{
+      position:sticky; top:0; z-index:30;
+      backdrop-filter: blur(12px);
+      background: rgba(11,15,20,.55);
+      border-bottom:1px solid rgba(30,43,61,.6);
+    }
+    .navInner{display:flex; align-items:center; justify-content:space-between; gap:14px}
+    .logo{
+      display:flex; align-items:center; gap:10px; padding:10px 0;
+      font-weight:800; letter-spacing:.2px;
+    }
+    .mark{
+      width:36px; height:36px; border-radius:12px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow:0 10px 28px rgba(124,92,255,.35);
+    }
+    .navLinks{display:flex; gap:14px; align-items:center; color:var(--muted)}
+    .pill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px; border:1px solid rgba(30,43,61,.9);
+      background: rgba(17,24,38,.65); border-radius:999px;
+    }
+    .iconBtn{
+      cursor:pointer;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(30,43,61,.9);
+      background: rgba(17,24,38,.65);
+      transition:.15s transform ease, .15s border-color ease;
+    }
+    .iconBtn:hover{transform: translateY(-1px); border-color: rgba(124,92,255,.55)}
+    .badge{
+      min-width:20px; height:20px; padding:0 6px;
+      border-radius:999px; background:rgba(124,92,255,.22);
+      border:1px solid rgba(124,92,255,.45);
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:12px; color:var(--text);
+    }
+
+    .hero{
+      margin-top:18px;
+      border:1px solid rgba(30,43,61,.85);
+      background: linear-gradient(180deg, rgba(17,24,38,.8), rgba(17,24,38,.55));
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:0;
+    }
+    .heroLeft{padding:28px 26px}
+    .kicker{color:var(--muted); font-size:13px; letter-spacing:.14em; text-transform:uppercase}
+    h1{margin:10px 0 10px; font-size:44px; line-height:1.05}
+    .sub{color:var(--muted); max-width:60ch; line-height:1.6}
+    .ctaRow{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap}
+    .btn{
+      cursor:pointer;
+      padding:12px 14px; border-radius:999px;
+      border:1px solid rgba(30,43,61,.9);
+      background: rgba(15,22,34,.8);
+      color:var(--text);
+      transition:.15s transform ease, .15s border-color ease, .15s background ease;
+      display:inline-flex; align-items:center; gap:10px;
+    }
+    .btn:hover{transform: translateY(-1px); border-color: rgba(124,92,255,.55)}
+    .btnPrimary{
+      border-color: rgba(124,92,255,.65);
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(0,212,255,.55));
+      color:#071018;
+      font-weight:800;
+    }
+    .btnPrimary:hover{border-color: rgba(0,212,255,.7)}
+    .heroRight{
+      position:relative;
+      padding:18px;
+      background:
+        radial-gradient(500px 320px at 50% 15%, rgba(124,92,255,.28), transparent 60%),
+        radial-gradient(450px 300px at 60% 70%, rgba(0,212,255,.18), transparent 60%),
+        rgba(15,22,34,.55);
+      border-left:1px solid rgba(30,43,61,.65);
+      display:flex; flex-direction:column; justify-content:center; gap:12px;
+    }
+    .stat{
+      border:1px solid rgba(30,43,61,.75);
+      background: rgba(17,24,38,.6);
+      border-radius: var(--radius2);
+      padding:14px;
+    }
+    .stat b{display:block; font-size:20px}
+    .stat span{color:var(--muted); font-size:13px}
+
+    .sectionTitle{
+      display:flex; align-items:end; justify-content:space-between; gap:12px;
+      margin:26px 0 12px;
+    }
+    .sectionTitle h2{margin:0; font-size:22px}
+    .sectionTitle p{margin:0; color:var(--muted); font-size:13px}
+
+    .controls{
+      display:grid;
+      grid-template-columns: 1.35fr .9fr .9fr .9fr;
+      gap:10px;
+      padding:12px;
+      border-radius: var(--radius);
+      border:1px solid rgba(30,43,61,.85);
+      background: rgba(17,24,38,.55);
+    }
+    .field{
+      display:flex; flex-direction:column; gap:6px;
+      padding:10px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(30,43,61,.75);
+      background: rgba(15,22,34,.6);
+    }
+    label{font-size:12px; color:var(--muted)}
+    input[type="search"], select{
+      width:100%;
+      padding:10px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(30,43,61,.75);
+      background: rgba(11,15,20,.55);
+      color:var(--text);
+      outline:none;
+    }
+    input[type="search"]:focus, select:focus{border-color: rgba(124,92,255,.55)}
+
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:14px;
+    }
+    .card{
+      border:1px solid rgba(30,43,61,.85);
+      background: rgba(17,24,38,.55);
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.2);
+      display:flex; flex-direction:column;
+      min-height: 340px;
+    }
+
+    /* Product image area */
+    .thumb{
+      height:170px;
+      background:
+        radial-gradient(240px 120px at 30% 20%, rgba(124,92,255,.35), transparent 60%),
+        radial-gradient(220px 140px at 80% 80%, rgba(0,212,255,.18), transparent 60%),
+        linear-gradient(135deg, rgba(15,22,34,.90), rgba(17,24,38,.70));
+      border-bottom:1px solid rgba(30,43,61,.7);
+      position:relative;
+      overflow:hidden;
+    }
+    .thumbImg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      z-index:0;
+      transform: scale(1.02);
+      filter: saturate(1.05) contrast(1.05);
+    }
+
+    .tag{
+      position:absolute; top:12px; left:12px;
+      padding:8px 10px; border-radius:999px;
+      background: rgba(11,15,20,.55);
+      border:1px solid rgba(30,43,61,.85);
+      font-size:12px; color: var(--muted);
+      backdrop-filter: blur(10px);
+      z-index:2;
+    }
+
+    .cardBody{padding:14px; display:flex; flex-direction:column; gap:10px; flex:1}
+    .titleRow{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
+    .name{font-weight:800; line-height:1.2}
+    .price{font-weight:900}
+    .meta{display:flex; gap:8px; flex-wrap:wrap; color:var(--muted); font-size:12px}
+    .chip{
+      border:1px solid rgba(30,43,61,.75);
+      background: rgba(15,22,34,.6);
+      padding:6px 8px; border-radius:999px;
+    }
+    .cardActions{margin-top:auto; display:flex; gap:10px}
+    .btnSm{
+      padding:10px 12px; border-radius:999px;
+      border:1px solid rgba(30,43,61,.85);
+      background: rgba(15,22,34,.75);
+      color:var(--text);
+      cursor:pointer;
+      flex:1;
+      transition:.15s transform ease, .15s border-color ease;
+    }
+    .btnSm:hover{transform: translateY(-1px); border-color: rgba(124,92,255,.55)}
+    .btnSmPrimary{
+      border-color: rgba(124,92,255,.65);
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(0,212,255,.55));
+      color:#071018; font-weight:900;
+    }
+
+    .empty{
+      margin-top:14px;
+      padding:18px;
+      border-radius: var(--radius);
+      border:1px dashed rgba(154,176,201,.35);
+      color:var(--muted);
+      background: rgba(17,24,38,.35);
+    }
+
+    /* -------- Pages (Shop vs Categories) -------- */
+    .page{display:none}
+    .page.show{display:block}
+
+    /* -------- Categories page classes -------- */
+    .catGrid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+      margin-top:14px;
+    }
+    .catCard{
+      border:1px solid rgba(30,43,61,.85);
+      background: rgba(17,24,38,.55);
+      border-radius: var(--radius);
+      padding:16px;
+      box-shadow: 0 18px 40px rgba(0,0,0,.2);
+      cursor:pointer;
+      transition:.15s transform ease, .15s border-color ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .catCard:hover{transform: translateY(-2px); border-color: rgba(124,92,255,.55)}
+    .catCard::after{
+      content:"";
+      position:absolute; inset:-60px;
+      background:
+        radial-gradient(240px 140px at 25% 25%, rgba(124,92,255,.22), transparent 60%),
+        radial-gradient(260px 160px at 75% 70%, rgba(0,212,255,.14), transparent 60%);
+      pointer-events:none;
+      transform: rotate(8deg);
+    }
+    .catTop{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position:relative; z-index:1}
+    .catName{font-weight:900; font-size:16px; line-height:1.2}
+    .catCount{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(124,92,255,.18);
+      border:1px solid rgba(124,92,255,.4);
+      color: var(--text);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .catDesc{color:var(--muted); font-size:13px; line-height:1.55; margin-top:8px; position:relative; z-index:1}
+    .catAction{
+      margin-top:12px;
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px; border-radius:999px;
+      border:1px solid rgba(30,43,61,.85);
+      background: rgba(15,22,34,.75);
+      color:var(--text);
+      position:relative; z-index:1;
+    }
+
+    /* Drawer */
+    .overlay{
+      position:fixed; inset:0; background: rgba(0,0,0,.45);
+      display:none; z-index:60;
+    }
+    .overlay.show{display:block}
+    .drawer{
+      position:fixed; top:0; right:0; height:100%; width:min(420px, 92vw);
+      background: rgba(11,15,20,.92);
+      border-left:1px solid rgba(30,43,61,.75);
+      backdrop-filter: blur(14px);
+      transform: translateX(105%);
+      transition: transform .22s ease;
+      z-index:70;
+      display:flex; flex-direction:column;
+    }
+    .drawer.show{transform: translateX(0)}
+    .drawerHeader{
+      padding:16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      border-bottom:1px solid rgba(30,43,61,.7);
+    }
+    .drawerHeader b{font-size:16px}
+    .drawerBody{padding:14px; overflow:auto; flex:1}
+    .lineItem{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      padding:12px;
+      border-radius: 16px;
+      border:1px solid rgba(30,43,61,.75);
+      background: rgba(17,24,38,.55);
+      margin-bottom:10px;
+    }
+    .liTitle{font-weight:800}
+    .liMeta{color:var(--muted); font-size:12px; margin-top:2px}
+    .qtyRow{display:flex; gap:8px; align-items:center; justify-content:flex-end}
+    .qtyBtn{
+      width:34px; height:34px; border-radius:12px;
+      border:1px solid rgba(30,43,61,.85);
+      background: rgba(15,22,34,.8);
+      color:var(--text); cursor:pointer;
+    }
+    .remove{
+      cursor:pointer;
+      border:none;
+      color: var(--danger);
+      background: transparent;
+      font-weight:800;
+      padding:6px 8px;
+    }
+    .drawerFooter{
+      padding:14px 16px;
+      border-top:1px solid rgba(30,43,61,.7);
+      background: rgba(17,24,38,.45);
+    }
+    .totals{display:flex; justify-content:space-between; color:var(--muted); margin-bottom:10px}
+    .totals b{color:var(--text)}
+    .checkout{
+      width:100%;
+      padding:12px 14px;
+      border-radius:999px;
+      border:1px solid rgba(124,92,255,.65);
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(0,212,255,.55));
+      color:#071018; font-weight:900;
+      cursor:pointer;
+    }
+
+    footer{padding:30px 0 34px; color:var(--muted); font-size:13px}
+    .footGrid{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+    .small{opacity:.9}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .heroGrid{grid-template-columns: 1fr}
+      .heroRight{border-left:none; border-top:1px solid rgba(30,43,61,.65)}
+      .grid{grid-template-columns: repeat(3, 1fr)}
+      .controls{grid-template-columns: 1fr 1fr}
+      .catGrid{grid-template-columns: repeat(2, 1fr)}
+    }
+    @media (max-width: 720px){
+      h1{font-size:34px}
+      .grid{grid-template-columns: repeat(2, 1fr)}
+      .navLinks{display:none}
+      .controls{grid-template-columns: 1fr}
+      .catGrid{grid-template-columns: 1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAV -->
+  <div class="nav">
+    <div class="container navInner">
+      <a class="logo" href="#shop">
+        <span class="mark" aria-hidden="true"></span>
+        <span>Macharia.co</span>
+      </a>
+
+      <div class="navLinks">
+        <a class="pill" href="#shop">Shop</a>
+        <a class="pill" href="#categories">Categories</a>
+        <a class="pill" href="#about">About</a>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="iconBtn" id="openCartBtn" aria-label="Open cart">
+          🛒 <span>Cart</span> <span class="badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- ============ PAGE: SHOP ============ -->
+    <div id="page-shop" class="page show">
+      <section class="hero" id="new">
+        <div class="heroGrid">
+          <div class="heroLeft">
+            <div class="kicker">KENYA READY • 50+ ITEMS</div>
+            <h1>Clothes that hit.<br/>Prices in KSh.</h1>
+            <p class="sub">
+              Shop today at Macharia.co!!!
+            </p>
+            <div class="ctaRow">
+              <button class="btn btnPrimary" onclick="document.querySelector('#shop').scrollIntoView({behavior:'smooth'})">
+                Shop Collection →
+              </button>
+              <a class="btn" href="#categories">Browse Categories</a>
+            </div>
+          </div>
+
+          <div class="heroRight">
+    <div class="stat" onclick="handleMembership()" style="cursor:pointer;" title="Click to Sign-up">
+        <b>Sign-up to be a member</b>
+        <span>Weekly offers, free gifts, sign up today.</span>
+    </div>
+    
+    <div class="stat" onclick="handlePreOrder()" style="cursor:pointer;" title="Click to Pre-order">
+        <b>Pre-order</b>
+        <span>Want custom finds? Pre-order now at Macharia.co</span>
+    </div>
+    
+    <a href="tel:0700200234" style="text-decoration: none; color: inherit;">
+        <div class="stat" title="Click to Call">
+            <b>Call us on:</b>
+            <span>0700200234</span>
+        </div>
+    </a>
+</div>
+      </section>
+
+      <div class="sectionTitle" id="shop">
+        <div>
+          <h2>Shop</h2>
+          <p>Search, filter, sort — then add to cart.</p>
+        </div>
+        <div class="small" id="resultsCount"></div>
+      </div>
+
+      <section class="controls" aria-label="Product controls">
+        <div class="field">
+          <label for="q">Search</label>
+          <input id="q" type="search" placeholder="Try: hoodie, cargo, tee..." />
+        </div>
+
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="all">All</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="size">Size</label>
+          <select id="size">
+            <option value="all">All</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="sort">Sort</label>
+          <select id="sort">
+            <option value="featured">Featured</option>
+            <option value="low">Price: Low → High</option>
+            <option value="high">Price: High → Low</option>
+            <option value="new">Newest</option>
+          </select>
+        </div>
+      </section>
+
+      <section id="productGrid" class="grid" aria-label="Products"></section>
+      <div id="emptyState" class="empty" style="display:none;">
+        No products match your filters. Try removing a filter or searching something else.
+      </div>
+
+      <div class="sectionTitle" id="about">
+        <div>
+          <h2>About</h2>
+          <p>Replace this with your brand story.</p>
+        </div>
+      </div>
+
+      <section class="hero" style="padding:18px;">
+        <div style="display:grid; grid-template-columns: 1.2fr .8fr; gap:14px;">
+          <div style="padding:10px 8px;">
+            <div class="kicker">URBANTHREAD</div>
+            <p class="sub" style="margin:10px 0 0;">
+              To add your own pics from your PC later: create <b>images/</b> next to this file and set
+              <code>image:"images/yourfile.jpg"</code> for each product.
+            </p>
+          </div>
+          <div class="stat">
+            <b>Next steps</b>
+            <span>1) Replace products • 2) Add your images • 3) Connect payments</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ PAGE: CATEGORIES ============ -->
+    <div id="page-categories" class="page">
+      <section class="hero">
+        <div class="heroLeft" style="padding:26px;">
+          <div class="kicker">BROWSE</div>
+          <h1 style="margin:10px 0 8px;">Categories</h1>
+          <p class="sub" style="max-width:65ch;">
+            Click a category to instantly filter the Shop page.
+          </p>
+          <div class="ctaRow" style="margin-top:14px;">
+            <a class="btn btnPrimary" href="#shop">Back to Shop →</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="sectionTitle">
+        <div>
+          <h2>All Categories</h2>
+          <p>Counts update automatically from the product list.</p>
+        </div>
+      </div>
+
+      <section id="categoriesGrid" class="catGrid" aria-label="Categories list"></section>
+      <div class="empty" style="display:none;" id="catEmpty">No categories found.</div>
+    </div>
+
+    <footer>
+      <div class="footGrid">
+        <div>© <span id="year"></span> Macharia.com</div>
+        <div class="small">Demo UI • No real payments</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- CART DRAWER -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" aria-label="Cart drawer">
+    <div class="drawerHeader">
+      <b>Your Cart</b>
+      <button class="iconBtn" id="closeCartBtn" aria-label="Close cart">✕</button>
+    </div>
+
+    <div class="drawerBody" id="cartItems"></div>
+
+    <div class="drawerFooter">
+      <div class="totals">
+        <span>Total</span>
+        <b id="cartTotal">KSh 0</b>
+      </div>
+      <button class="checkout" id="checkoutBtn">Checkout (demo)</button>
+      <div class="small" style="margin-top:10px; color:var(--muted);">
+        Replace this with Stripe / M-Pesa later.
+      </div>
+    </div>
+  </aside>
+
+<script>
+  // Function for Member Sign-up (Name, Email, Phone)
+function handleMembership() {
+    const name = prompt("Enter your full name:");
+    if (!name) return;
+
+    const email = prompt(`Hi ${name}, enter your email for weekly offers:`);
+    if (!email) return;
+
+    const phone = prompt("Finally, enter your phone number to receive gift alerts:");
+    if (!phone) {
+        alert("Registration cancelled. Phone number is required for member gifts.");
+        return;
+    }
+
+    // Success Message
+    alert(`Welcome to the club, ${name}!\n\nWe have registered ${email} and ${phone}.\nLook out for your first weekly offer soon!`);
+}
+
+// Function for Pre-orders (Custom Find, Name, Phone)
+function handlePreOrder() {
+    const customItem = prompt("What custom find are you looking for? (Describe the item):");
+    if (!customItem) return;
+
+    const userName = prompt("Please enter your name:");
+    if (!userName) return;
+
+    const userPhone = prompt("Enter your phone number for the order update:");
+    if (!userPhone) return;
+
+    // Inform user of the confirmation text
+    alert(`Thank you, ${userName}!\n\nYour request for "${customItem}" has been received. You will get a confirmation text for your order on ${userPhone} shortly.`);
+    
+    // Optional: Open WhatsApp with the pre-filled details
+    // const msg = encodeURIComponent(`Pre-order Request\nName: ${userName}\nItem: ${customItem}\nPhone: ${userPhone}`);
+    // window.open(`https://wa.me/254700200234?text=${msg}`, '_blank');
+}
+  // ===== 1. CURRENCY & FORMATTING =====
+  const fmt = (n) => {
+    const v = Math.round(Number(n) || 0);
+    return "KSh " + v.toLocaleString("en-KE");
+  };
+
+  // ===== 2. IMAGE HELPER (LOCAL FOLDER INTEGRATION) =====
+  // This ensures paths look like: images/Hoodies/hoodie1.jpg
+  const uimg = (category, filename) => `images/${category}/${filename}`;
+
+  // ===== 3. PRODUCTS DATA (MAPPED TO YOUR 11 FOLDERS) =====
+  const PRODUCTS = [
+    // Hoodies
+    { id:"p1", name:"Midnight Hoodie", category:"Hoodies", price:2499, sizes:["S","M","L","XL"], featured:1, createdAt:"2025-12-15", badges:["Cozy","Best Seller"], image: uimg("Hoodies","hoodie1.jpg") },
+    { id:"p9", name:"Essential Hoodie", category:"Hoodies", price:2299, sizes:["S","M","L","XL"], featured:20, createdAt:"2025-12-18", badges:["Warm"], image: uimg("Hoodies","hoodie2.jpg") },
+    { id:"p10", name:"Zip-Up Hoodie", category:"Hoodies", price:2599, sizes:["S","M","L","XL"], featured:21, createdAt:"2025-12-08", badges:["Zip"], image: uimg("Hoodies","hoodie3.jpg") },
+    { id:"p11", name:"Boxy Hoodie", category:"Hoodies", price:2399, sizes:["S","M","L"], featured:22, createdAt:"2025-11-26", badges:["Street Fit"], image: uimg("Hoodies","hoodie4.jpg") },
+    { id:"p12", name:"Heavyweight Hoodie", category:"Hoodies", price:2999, sizes:["M","L","XL"], featured:23, createdAt:"2025-12-28", badges:["Premium"], image: uimg("Hoodies","hoodie5.jpg") },
+    { id:"p13", name:"Graphic Hoodie — Wave", category:"Hoodies", price:2799, sizes:["S","M","L","XL"], featured:24, createdAt:"2025-12-02", badges:["Graphic"], image: uimg("Hoodies","hoodie6.jpg") },
+
+    // T-Shirts
+    { id:"p2", name:"Core Oversized Tee", category:"T-Shirts", price:999, sizes:["XS","S","M","L","XL"], featured:2, createdAt:"2025-12-22", badges:["Soft Cotton"], image: uimg("T-Shirts","tee1.jpg") },
+    { id:"p14", name:"Oversized Tee — Stone", category:"T-Shirts", price:1099, sizes:["XS","S","M","L","XL"], featured:30, createdAt:"2025-12-21", badges:["Oversized"], image: uimg("T-Shirts","tee2.jpg") },
+    { id:"p15", name:"Basic Tee — White", category:"T-Shirts", price:799, sizes:["XS","S","M","L","XL"], featured:31, createdAt:"2025-10-30", badges:["Everyday"], image: uimg("T-Shirts","tee3.jpg") },
+    { id:"p16", name:"Basic Tee — Black", category:"T-Shirts", price:799, sizes:["XS","S","M","L","XL"], featured:32, createdAt:"2025-10-30", badges:["Everyday"], image: uimg("T-Shirts","tee4.jpg") },
+    { id:"p17", name:"Ringer Tee", category:"T-Shirts", price:950, sizes:["S","M","L","XL"], featured:33, createdAt:"2025-11-14", badges:["Retro"], image: uimg("T-Shirts","tee5.jpg") },
+    { id:"p18", name:"Longline Tee", category:"T-Shirts", price:1199, sizes:["S","M","L","XL"], featured:34, createdAt:"2025-12-11", badges:["New"], image: uimg("T-Shirts","tee6.jpg") },
+    { id:"p19", name:"Pocket Tee", category:"T-Shirts", price:899, sizes:["XS","S","M","L","XL"], featured:35, createdAt:"2025-11-03", badges:["Pocket"], image: uimg("T-Shirts","tee7.jpg") },
+    { id:"p20", name:"Graphic Tee — Neon", category:"T-Shirts", price:1299, sizes:["S","M","L","XL"], featured:36, createdAt:"2025-12-27", badges:["Hot"], image: uimg("T-Shirts","tee8.jpg") },
+
+    // Pants
+    { id:"p3", name:"Street Cargo Pants", category:"Pants", price:2199, sizes:["S","M","L","XL"], featured:3, createdAt:"2025-11-28", badges:["Utility"], image:uimg("Pants","pants1.jpg") },
+    { id:"p21", name:"Slim Cargo Pants", category:"Pants", price:2299, sizes:["S","M","L","XL"], featured:40, createdAt:"2025-11-20", badges:["Slim"], image:uimg("Pants","pants2.jpg") },
+    { id:"p22", name:"Relaxed Cargo Pants", category:"Pants", price:2399, sizes:["S","M","L","XL"], featured:41, createdAt:"2025-12-06", badges:["Relaxed"], image:uimg("Pants","pants3.jpg") },
+    { id:"p23", name:"Straight Denim", category:"Pants", price:2699, sizes:["S","M","L","XL"], featured:42, createdAt:"2025-10-12", badges:["Denim"], image:uimg("Pants","pants4.jpg") },
+    { id:"p24", name:"Baggy Denim", category:"Pants", price:2799, sizes:["S","M","L","XL"], featured:43, createdAt:"2025-12-14", badges:["Baggy"], image:uimg("Pants","pants5.jpg") },
+    { id:"p25", name:"Chino Pants", category:"Pants", price:2199, sizes:["S","M","L","XL"], featured:44, createdAt:"2025-09-25", badges:["Clean"], image:uimg("Pants","pants6.jpg") },
+    { id:"p26", name:"Track Pants", category:"Pants", price:1799, sizes:["S","M","L","XL"], featured:45, createdAt:"2025-12-01", badges:["Sport"], image:uimg("Pants","pants7.jpg") },
+    { id:"p27", name:"Pleated Trousers", category:"Pants", price:2499, sizes:["S","M","L"], featured:46, createdAt:"2025-11-29", badges:["Formal"], image:uimg("Pants","pants8.jpg") },
+
+    // Outerwear
+    { id:"p4", name:"Cloud Puffer Jacket", category:"Outerwear", price:5499, sizes:["S","M","L"], featured:4, createdAt:"2025-12-29", badges:["New"], image:uimg("Outerwear","jacket1.jpg") },
+    { id:"p5", name:"Classic Denim Jacket", category:"Outerwear", price:3999, sizes:["S","M","L","XL"], featured:6, createdAt:"2025-10-18", badges:["Iconic"], image:uimg("Outerwear","jacket2.jpg") },
+    { id:"p28", name:"Bomber Jacket", category:"Outerwear", price:4499, sizes:["S","M","L","XL"], featured:50, createdAt:"2025-12-13", badges:["Street"], image:uimg("Outerwear","jacket3.jpg") },
+    { id:"p29", name:"Windbreaker Jacket", category:"Outerwear", price:3299, sizes:["S","M","L","XL"], featured:51, createdAt:"2025-12-26", badges:["Light"], image:uimg("Outerwear","jacket4.jpg") },
+    { id:"p30", name:"Fleece Jacket", category:"Outerwear", price:3899, sizes:["S","M","L","XL"], featured:52, createdAt:"2025-11-08", badges:["Warm"], image:uimg("Outerwear","jacket5.jpg") },
+    { id:"p31", name:"Trench Coat", category:"Outerwear", price:5999, sizes:["S","M","L"], featured:53, createdAt:"2025-10-05", badges:["Elegant"], image:uimg("Outerwear","jacket6.jpg") },
+    { id:"p32", name:"Overshirt Jacket", category:"Outerwear", price:3599, sizes:["S","M","L","XL"], featured:54, createdAt:"2025-12-09", badges:["Layer"], image:uimg("Outerwear","jacket7.jpg") },
+
+    // Tops
+    { id:"p6", name:"Ribbed Crop Top", category:"Tops", price:850, sizes:["XS","S","M","L"], featured:5, createdAt:"2025-12-05", badges:["Trending"], image:uimg("Tops","top1.jpg") },
+    { id:"p33", name:"Ribbed Tank", category:"Tops", price:650, sizes:["XS","S","M","L"], featured:60, createdAt:"2025-11-21", badges:["Basic"], image:uimg("Tops","top2.jpg") },
+    { id:"p34", name:"Satin Cami", category:"Tops", price:999, sizes:["XS","S","M","L"], featured:61, createdAt:"2025-12-03", badges:["Shine"], image:uimg("Tops","top3.jpg") },
+    { id:"p35", name:"Wrap Top", category:"Tops", price:1199, sizes:["XS","S","M","L"], featured:62, createdAt:"2025-10-20", badges:["Chic"], image:uimg("Tops","top4.jpg") },
+    { id:"p36", name:"Mesh Top", category:"Tops", price:1099, sizes:["XS","S","M","L"], featured:63, createdAt:"2025-12-24", badges:["Night"], image:uimg("Tops","top5.jpg") },
+    { id:"p37", name:"Button-Up Shirt", category:"Tops", price:1599, sizes:["S","M","L","XL"], featured:64, createdAt:"2025-11-01", badges:["Smart"], image:uimg("Tops","top6.jpg") },
+
+    // Accessories
+    { id:"p8", name:"Minimal Cap", category:"Accessories", price:650, sizes:["M"], featured:8, createdAt:"2025-12-30", badges:["New"], image:uimg("Accessories","acc1.jpg") },
+    { id:"p38", name:"Crew Socks (3 Pack)", category:"Accessories", price:499, sizes:["M"], featured:70, createdAt:"2025-10-09", badges:["Bundle"], image:uimg("Accessories","acc2.jpg") },
+    { id:"p39", name:"Canvas Tote Bag", category:"Accessories", price:899, sizes:["M"], featured:71, createdAt:"2025-12-12", badges:["Carry"], image:uimg("Accessories","acc3.jpg") },
+    { id:"p40", name:"Minimal Belt", category:"Accessories", price:950, sizes:["M"], featured:72, createdAt:"2025-11-18", badges:["Essential"], image:uimg("Accessories","acc4.jpg") },
+    { id:"p41", name:"Beanie", category:"Accessories", price:650, sizes:["M"], featured:73, createdAt:"2025-12-20", badges:["Warm"], image:uimg("Accessories","acc5.jpg") },
+    { id:"p42", name:"Sunglasses", category:"Accessories", price:1299, sizes:["M"], featured:74, createdAt:"2025-10-16", badges:["UV"], image:uimg("Accessories","acc6.jpg") },
+// This loop automatically generates the 33 accessory items
+// ===== Accessories Generator =====
+  ...Array.from({ length: 33 }, (_, i) => {
+    const idNum = i + 7;
+    // This formula creates a stable price between 400 and 800 
+    // based on whether the ID is even, odd, or divisible by 3.
+    const calculatedPrice = 400 + ((idNum * 123) % 401); 
+    
+    return {
+      id: `acc-auto-${idNum}`,
+      name: `Premium Accessory ${idNum}`,
+      category: "Accessories",
+      price: calculatedPrice, // Stable, non-random price
+      sizes: ["M"],
+      featured: 200 + i,
+      createdAt: "2026-01-13",
+      badges: [],
+      image: uimg("Accessories", `acc${idNum}.jpg`)
+    };
+  }),
+
+    // Shorts
+    { id:"p43", name:"Cargo Shorts", category:"Shorts", price:1499, sizes:["S","M","L","XL"], featured:80, createdAt:"2025-11-06", badges:["Utility"], image:uimg("Shorts","shorts1.jpg") },
+    { id:"p44", name:"Denim Shorts", category:"Shorts", price:1599, sizes:["S","M","L","XL"], featured:81, createdAt:"2025-12-07", badges:["Denim"], image:uimg("Shorts","shorts2.jpg") },
+    { id:"p45", name:"Cycling Shorts", category:"Shorts", price:1199, sizes:["XS","S","M","L"], featured:82, createdAt:"2025-12-25", badges:["Sport"], image:uimg("Shorts","shorts3.jpg") },
+    { id:"p46", name:"Lounge Shorts", category:"Shorts", price:999, sizes:["S","M","L","XL"], featured:83, createdAt:"2025-10-25", badges:["Comfort"], image:uimg("Shorts","shorts4.jpg") },
+
+    // Sweaters
+    { id:"p47", name:"Knit Sweater", category:"Sweaters", price:2299, sizes:["S","M","L","XL"], featured:90, createdAt:"2025-12-17", badges:["Knit"], image:uimg("Sweaters","sweater1.jpg") },
+    { id:"p48", name:"Turtleneck Sweater", category:"Sweaters", price:2599, sizes:["S","M","L"], featured:91, createdAt:"2025-11-11", badges:["Warm"], image:uimg("Sweaters","sweater2.jpg") },
+    { id:"p49", name:"Cardigan", category:"Sweaters", price:2199, sizes:["S","M","L","XL"], featured:92, createdAt:"2025-10-28", badges:["Layer"], image:uimg("Sweaters","sweater3.jpg") },
+    { id:"p50", name:"Zip Sweater", category:"Sweaters", price:2699, sizes:["S","M","L","XL"], featured:93, createdAt:"2025-12-23", badges:["New"], image:uimg("Sweaters","sweater4.jpg") },
+
+    // Skirts
+    { id:"p51", name:"Mini Skirt", category:"Skirts", price:1399, sizes:["XS","S","M","L"], featured:100, createdAt:"2025-11-30", badges:["Cute"], image:uimg("Skirts","skirt1.jpg") },
+    { id:"p52", name:"Pleated Skirt", category:"Skirts", price:1699, sizes:["XS","S","M","L"], featured:101, createdAt:"2025-12-16", badges:["Classic"], image:uimg("Skirts","skirt2.jpg") },
+    { id:"p53", name:"Denim Skirt", category:"Skirts", price:1599, sizes:["XS","S","M","L"], featured:102, createdAt:"2025-10-08", badges:["Denim"], image:uimg("Skirts","skirt3.jpg") },
+
+    // Dresses
+    { id:"p54", name:"Bodycon Dress", category:"Dresses", price:2499, sizes:["XS","S","M","L"], featured:110, createdAt:"2025-12-31", badges:["New"], image:uimg("Dresses","dress1.jpg") },
+    { id:"p55", name:"Slip Dress", category:"Dresses", price:2699, sizes:["XS","S","M","L"], featured:111, createdAt:"2025-12-04", badges:["Chic"], image:uimg("Dresses","dress2.jpg") },
+    { id:"p56", name:"Midi Dress", category:"Dresses", price:2999, sizes:["S","M","L","XL"], featured:112, createdAt:"2025-11-07", badges:["Elegant"], image:uimg("Dresses","dress3.jpg") },
+
+    // Sets
+    { id:"p57", name:"Matching Set — Lounge", category:"Sets", price:3499, sizes:["S","M","L","XL"], featured:120, createdAt:"2025-12-19", badges:["Bundle"], image:uimg("Sets","set1.jpg") },
+    { id:"p58", name:"Matching Set — Street", category:"Sets", price:3799, sizes:["S","M","L","XL"], featured:121, createdAt:"2025-12-22", badges:["Trending"], image:uimg("Sets","set2.jpg") },
+  ];
+
+  // ===== 4. STATE MANAGEMENT =====
+  const CART_KEY = "urbanthread_cart_v3";
+  const state = {
+    q: "",
+    category: "all",
+    size: "all",
+    sort: "featured",
+    cart: loadCart()
+  };
+
+  function loadCart(){
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || "{}"); }
+    catch { return {}; }
+  }
+  function saveCart(){
+    localStorage.setItem(CART_KEY, JSON.stringify(state.cart));
+    renderCartBadge();
+  }
+
+  // ===== 5. HELPERS =====
+  const $ = (sel) => document.querySelector(sel);
+  const uniq = (arr) => [...new Set(arr)];
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
+
+  // ===== 6. RENDER LOGIC =====
+
+  function initCategoriesSelect(){
+    const cats = uniq(PRODUCTS.map(p => p.category)).sort();
+    const sel = $("#category");
+    if(!sel) return;
+    sel.innerHTML = `<option value="all">All</option>`;
+    cats.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      sel.appendChild(opt);
+    });
+  }
+
+  function getVisibleProducts(){
+    const q = state.q.trim().toLowerCase();
+    let list = PRODUCTS.slice();
+
+    if(q){
+      list = list.filter(p =>
+        (p.name.toLowerCase().includes(q)) ||
+        (p.category.toLowerCase().includes(q)) ||
+        (p.badges || []).some(b => b.toLowerCase().includes(q))
+      );
+    }
+    if(state.category !== "all"){
+      list = list.filter(p => p.category === state.category);
+    }
+    if(state.size !== "all"){
+      list = list.filter(p => p.sizes.includes(state.size));
+    }
+
+    switch(state.sort){
+      case "low": list.sort((a,b) => a.price - b.price); break;
+      case "high": list.sort((a,b) => b.price - a.price); break;
+      case "new": list.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)); break;
+      default: list.sort((a,b) => (a.featured ?? 999) - (b.featured ?? 999));
+    }
+    return list;
+  }
+
+  function renderProducts(){
+    const grid = $("#productGrid");
+    const empty = $("#emptyState");
+    if(!grid) return;
+    grid.innerHTML = "";
+
+    const list = getVisibleProducts();
+    if($("#resultsCount")) $("#resultsCount").textContent = `${list.length} item${list.length===1?"":"s"}`;
+
+    if(list.length === 0){
+      if(empty) empty.style.display = "block";
+      return;
+    }
+    if(empty) empty.style.display = "none";
+
+    list.forEach(p => {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="thumb">
+          <img class="thumbImg" 
+               src="${escapeHtml(p.image)}" 
+               alt="${escapeHtml(p.name)}" 
+               onerror="this.src='https://via.placeholder.com/400x500?text=Missing+Image'; console.warn('Missing local file: ${p.image}');"
+               loading="lazy">
+          <div class="tag">${escapeHtml(p.category)}</div>
+        </div>
+        <div class="cardBody">
+          <div class="titleRow">
+            <div>
+              <div class="name">${escapeHtml(p.name)}</div>
+              <div class="meta">
+                ${(p.badges || []).slice(0,2).map(b => `<span class="chip">${escapeHtml(b)}</span>`).join("")}
+                <span class="chip">Sizes: ${p.sizes.join(", ")}</span>
+              </div>
+            </div>
+            <div class="price">${fmt(p.price)}</div>
+          </div>
+          <div class="cardActions">
+            <button class="btnSm" data-view="${p.id}">Quick view</button>
+            <button class="btnSm btnSmPrimary" data-add="${p.id}">Add</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    grid.querySelectorAll("[data-add]").forEach(btn => btn.onclick = () => addToCart(btn.dataset.add));
+    grid.querySelectorAll("[data-view]").forEach(btn => btn.onclick = () => quickView(btn.dataset.view));
+  }
+
+  function categoryDescription(name){
+    const map = {
+      "Hoodies":"Warm layers for cold nights.",
+      "T-Shirts":"Everyday tees — clean & comfy.",
+      "Pants":"Street + smart fits.",
+      "Outerwear":"Jackets & coats for layers.",
+      "Tops":"Crop tops, shirts, and more.",
+      "Accessories":"Caps, bags, belts, extras.",
+      "Shorts":"Casual + sporty shorts.",
+      "Sweaters":"Knitwear for cozy days.",
+      "Skirts":"Simple skirts for clean looks.",
+      "Dresses":"Easy fits for outings.",
+      "Sets":"Matching combos — instant drip."
+    };
+    return map[name] || "Browse the latest drops.";
+  }
+
+  function renderCategories(){
+    const grid = $("#categoriesGrid");
+    if(!grid) return;
+    const counts = {};
+    for(const p of PRODUCTS) counts[p.category] = (counts[p.category] || 0) + 1;
+    const cats = Object.keys(counts).sort();
+
+    grid.innerHTML = "";
+    // Replace the .forEach section inside your renderCategories function with this:
+cats.forEach(cat => {
+  const card = document.createElement("div");
+  card.className = "catCard";
+  // Removed image preview; kept only text and description
+  card.innerHTML = `
+    <div class="catTop" style="background: none; padding: 10px 0; border-bottom: 1px solid #eee;">
+      <div class="catName" style="font-size: 1.2rem; font-weight: bold; color: #333;">${escapeHtml(cat)}</div>
+      <div class="catCount" style="font-size: 0.85rem; color: #888;">${counts[cat]} items</div>
+    </div>
+    <div class="catDesc" style="margin: 10px 0; color: #555; line-height: 1.4;">
+      ${escapeHtml(categoryDescription(cat))}
+    </div>
+    <div class="catAction" style="font-size: 0.9rem; color: #000; font-weight: 500;">View in Shop →</div>
+  `;
+  card.onclick = () => {
+    state.category = cat;
+    if($("#category")) $("#category").value = cat;
+    location.hash = "#shop";
+    renderProducts();
+    setTimeout(() => document.querySelector("#shop")?.scrollIntoView({behavior:"smooth"}), 50);
+  };
+  grid.appendChild(card);
+});
+  }
+
+  // ===== 7. CART & INTERACTIVE LOGIC =====
+
+  function quickView(id){
+    const p = PRODUCTS.find(x => x.id === id);
+    if(!p) return;
+    const size = prompt(`${p.name}\nPrice: ${fmt(p.price)}\nSizes: ${p.sizes.join(", ")}\nEnter size:`, "M");
+    if(size && p.sizes.includes(size.toUpperCase())) addToCart(id, size.toUpperCase());
+    else if(size) alert("Invalid size.");
+  }
+
+  function addToCart(productId, chosenSize=null){
+    const p = PRODUCTS.find(x => x.id === productId);
+    const size = chosenSize || (p.sizes.includes("M") ? "M" : p.sizes[0]);
+    const key = `${productId}__${size}`;
+    if(!state.cart[key]) state.cart[key] = { productId, size, qty: 0 };
+    state.cart[key].qty += 1;
+    saveCart(); renderCart(); openCart();
+  }
+
+  function cartTotals(){
+    const items = Object.values(state.cart);
+    let total = 0, count = 0;
+    for(const it of items){
+      const p = PRODUCTS.find(x => x.id === it.productId);
+      if(p) { total += p.price * it.qty; count += it.qty; }
+    }
+    return { total, count };
+  }
+
+  function renderCartBadge(){
+    if($("#cartCount")) $("#cartCount").textContent = cartTotals().count;
+  }
+
+ // ----- Updated Cart Rendering (Restored Original Logic)
+    function renderCart() {
+      const box = $("#cartItems");
+      const { total, count } = cartTotals();
+      
+      // Update Total Display
+      if ($("#cartTotal")) $("#cartTotal").textContent = fmt(total);
+
+      if (!box) return;
+
+      if (count === 0) {
+        box.innerHTML = `
+          <div class="empty" style="margin:0;">
+            Your cart is empty. Add something 🔥
+          </div>
+        `;
+        return;
+      }
+
+      const items = Object.entries(state.cart);
+     // Replace the .map section inside your renderCart function with this:
+box.innerHTML = items.map(([key, it]) => {
+  const p = PRODUCTS.find(x => x.id === it.productId);
+  if (!p) return "";
+  return `
+    <div class="lineItem" style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+      <div class="liImgContainer" style="width: 50px; height: 50px; flex-shrink: 0; overflow: hidden; border-radius: 4px;">
+          <img src="${p.image}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">
+      </div>
+      
+      <div class="liInfo" style="flex-grow: 1;">
+        <div class="liTitle" style="font-weight: bold; font-size: 0.9rem;">${escapeHtml(p.name)}</div>
+        <div class="liMeta" style="font-size: 0.8rem; color: #666;">Size: ${escapeHtml(it.size)} • ${fmt(p.price)}</div>
+      </div>
+
+      <div style="text-align:right;">
+        <button class="remove" onclick="removeItem('${key}')" style="font-size: 0.7rem; cursor: pointer; background: none; border: none; color: red; padding: 0;">Remove</button>
+        <div class="qtyRow" style="display: flex; align-items: center; gap: 5px; margin-top: 4px;">
+          <button class="qtyBtn" onclick="changeQty('${key}', -1)">−</button>
+          <b style="font-size: 0.9rem;">${it.qty}</b>
+          <button class="qtyBtn" onclick="changeQty('${key}', 1)">+</button>
+        </div>
+      </div>
+    </div>
+  `;
+}).join("");
+    }
+
+    // ----- Global Helper Functions (Attach to Window for onclick access)
+    window.changeQty = (key, delta) => {
+      if (!state.cart[key]) return;
+      state.cart[key].qty += delta;
+      if (state.cart[key].qty <= 0) delete state.cart[key];
+      saveCart();
+      renderCart();
+    };
+
+    window.removeItem = (key) => {
+      delete state.cart[key];
+      saveCart();
+      renderCart();
+    };
+
+  const openCart = () => { $("#overlay").classList.add("show"); $("#drawer").classList.add("show"); };
+  const closeCart = () => { $("#overlay").classList.remove("show"); $("#drawer").classList.remove("show"); };
+
+  function showPage(){
+    const hash = (location.hash || "#shop").toLowerCase();
+    const isCats = hash.startsWith("#categories");
+    $("#page-shop").classList.toggle("show", !isCats);
+    $("#page-categories").classList.toggle("show", isCats);
+  }
+
+  // ===== 8. INITIALIZATION =====
+  document.addEventListener("DOMContentLoaded", () => {
+    initCategoriesSelect();
+    renderProducts();
+    renderCategories();
+    renderCartBadge();
+    renderCart();
+    showPage();
+
+    // Listeners
+    $("#q")?.addEventListener("input", (e) => { state.q = e.target.value; renderProducts(); });
+    $("#category")?.addEventListener("change", (e) => { state.category = e.target.value; renderProducts(); });
+    $("#size")?.addEventListener("change", (e) => { state.size = e.target.value; renderProducts(); });
+    $("#sort")?.addEventListener("change", (e) => { state.sort = e.target.value; renderProducts(); });
+    $("#openCartBtn")?.addEventListener("click", openCart);
+    $("#closeCartBtn")?.addEventListener("click", closeCart);
+    $("#overlay")?.addEventListener("click", closeCart);
+    window.addEventListener("hashchange", showPage);
+    if($("#year")) $("#year").textContent = new Date().getFullYear();
+  });
+</script>
+</body>
+</html>
