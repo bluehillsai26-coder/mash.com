@@ -681,7 +681,7 @@ function handlePreOrder() {
     { id:"p42", name:"Sunglasses", category:"Accessories", price:1299, sizes:["M"], featured:74, createdAt:"2025-10-16", badges:["UV"], image:uimg("Accessories","acc6.jpg") },
 // This loop automatically generates the 33 accessory items
 // ===== Accessories Generator =====
-  ...Array.from({ length: 33 }, (_, i) => {
+  ...Array.from({ length: 34 }, (_, i) => {
     const idNum = i + 7;
     // This formula creates a stable price between 400 and 800 
     // based on whether the ID is even, odd, or divisible by 3.
@@ -1028,4 +1028,5 @@ box.innerHTML = items.map(([key, it]) => {
   });
 </script>
 </body>
+
 </html>
