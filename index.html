@@ -1204,9 +1204,11 @@ async function sendOrderToRobot(ref, amount, email, items) {
 }
 
 // 2. The Updated Payment Function
-// 2. The Updated Payment Function
 function payWithPaystack() {
+    console.log("=== PAYSTACK DEBUG START ===");
+    
     const customerEmail = document.getElementById('checkout-email').value;
+    console.log("Email:", customerEmail);
 
     if (!customerEmail || !customerEmail.includes('@')) {
         alert("Please enter a valid email address for your receipt.");
@@ -1215,6 +1217,7 @@ function payWithPaystack() {
 
     // Calculate total correctly from cart object
     const { total, count } = cartTotals();
+    console.log("Cart Total:", total, "Count:", count);
     
     if (count === 0) {
         alert("Your cart is empty!");
@@ -1226,39 +1229,61 @@ function payWithPaystack() {
         const product = PRODUCTS.find(p => p.id === item.productId);
         return product ? `${product.name} - Size ${item.size} (x${item.qty})` : '';
     }).filter(Boolean).join(', ');
+    
+    console.log("Items List:", itemsList);
 
-    let handler = PaystackPop.setup({
-        key: 'pk_live_ebcc2d91a1283ce96a9ab0a50d60fd9200fe74f8', 
-        email: customerEmail,
-        amount: total * 100, 
-        currency: 'KES',
-        ref: 'OT_' + Math.floor((Math.random() * 1000000000) + 1),
-        channels: ['card', 'mpesa', 'bank_transfer'], 
-        
-        onClose: function() {
-            alert('Payment window closed.');
-        },
-        
-        callback: function(response) {
-            // Show the loading overlay
-            document.getElementById('paymentLoading').style.display = 'flex';
+    // Check if Paystack is loaded
+    if (typeof PaystackPop === 'undefined') {
+        console.error("PaystackPop is not defined! Script may not be loaded.");
+        alert("Payment system not loaded. Please refresh the page and try again.");
+        return;
+    }
+    
+    console.log("PaystackPop exists:", PaystackPop);
+
+    try {
+        let handler = PaystackPop.setup({
+            key: 'pk_live_ebcc2d91a1283ce96a9ab0a50d60fd9200fe74f8', 
+            email: customerEmail,
+            amount: total * 100, 
+            currency: 'KES',
+            ref: 'OT_' + Math.floor((Math.random() * 1000000000) + 1),
+            channels: ['card', 'mpesa', 'bank_transfer'], 
             
-            // Send data to the robot
-            sendOrderToRobot(response.reference, total, customerEmail, itemsList).then(() => {
-                document.getElementById('paymentLoading').style.display = 'none';
-                alert('Payment Received! Your order is being processed.');
+            onClose: function() {
+                console.log("Payment window closed by user");
+                alert('Payment window closed.');
+            },
+            
+            callback: function(response) {
+                console.log("Payment callback:", response);
+                // Show the loading overlay
+                document.getElementById('paymentLoading').style.display = 'flex';
                 
-                // Clear cart after robot confirms receipt
-                state.cart = {};
-                saveCart();
-                renderCart();
-                closeCart();
-            });
-        }
-    });
+                // Send data to the robot
+                sendOrderToRobot(response.reference, total, customerEmail, itemsList).then(() => {
+                    document.getElementById('paymentLoading').style.display = 'none';
+                    alert('Payment Received! Your order is being processed.');
+                    
+                    // Clear cart after robot confirms receipt
+                    state.cart = {};
+                    saveCart();
+                    renderCart();
+                    closeCart();
+                });
+            }
+        });
 
-    // FIX: Moved openIframe OUTSIDE the setup object's brackets
-    handler.openIframe();
+        console.log("Handler created:", handler);
+        console.log("About to open iframe...");
+        handler.openIframe();
+        console.log("openIframe() called");
+    } catch (error) {
+        console.error("Error setting up Paystack:", error);
+        alert("Error opening payment window: " + error.message);
+    }
+    
+    console.log("=== PAYSTACK DEBUG END ===");
 }
 </script>
 </body>
