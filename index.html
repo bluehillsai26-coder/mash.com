@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>UrbanThread — Clothing Store</title>
-
+<script src="https://js.paystack.co/v1/inline.js"></script>
   <style>
     :root{
       --bg:#0b0f14; --panel:#111826; --panel2:#0f1622;
@@ -630,10 +630,12 @@
         <span>Total</span>
         <b id="cartTotal">KSh 0</b>
       </div>
-      <div style="margin-bottom: 15px;">
-    <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 5px;">Receipt Email</label>
+     <div style="margin-bottom: 15px; padding: 0 5px;">
+    <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 5px;">
+        Receipt Email (Required for Card/M-Pesa)
+    </label>
     <input type="email" id="checkout-email" placeholder="your@email.com" 
-           style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--line); color: white; border-radius: 12px;">
+           style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--line); color: white; border-radius: 12px; outline: none;">
 </div>
       <button onclick="payWithPaystack()" class="btn btnPrimary" style="width:100%; margin-top:15px;">
     Secure Checkout
