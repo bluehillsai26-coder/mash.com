@@ -1204,8 +1204,8 @@ async function sendOrderToRobot(ref, amount, email, items) {
 }
 
 // 2. The Updated Payment Function
+// 2. The Updated Payment Function
 function payWithPaystack() {
-    const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     const customerEmail = document.getElementById('checkout-email').value;
 
     if (!customerEmail || !customerEmail.includes('@')) {
@@ -1213,13 +1213,19 @@ function payWithPaystack() {
         return;
     }
 
-    if (total === 0) {
+    // Calculate total correctly from cart object
+    const { total, count } = cartTotals();
+    
+    if (count === 0) {
         alert("Your cart is empty!");
         return;
     }
 
-    // CRITICAL: Define itemsList here, before the cart is cleared
-    const itemsList = state.cart.map(i => `${i.name} (x${i.qty})`).join(', ');
+    // Build items list from cart BEFORE clearing it
+    const itemsList = Object.entries(state.cart).map(([key, item]) => {
+        const product = PRODUCTS.find(p => p.id === item.productId);
+        return product ? `${product.name} - Size ${item.size} (x${item.qty})` : '';
+    }).filter(Boolean).join(', ');
 
     let handler = PaystackPop.setup({
         key: 'pk_test_fe47485fc5617d1f028a2e5591cd701767724506', 
@@ -1243,7 +1249,8 @@ function payWithPaystack() {
                 alert('Payment Received! Your order is being processed.');
                 
                 // Clear cart after robot confirms receipt
-                state.cart = [];
+                state.cart = {};
+                saveCart();
                 renderCart();
                 closeCart();
             });
