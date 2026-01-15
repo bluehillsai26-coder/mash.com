@@ -404,6 +404,24 @@
     background: var(--bg); border: 1px solid var(--line);
     color: white; border-radius: 8px;
 }
+.loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 15, 20, 0.9);
+    z-index: 3000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.spinner {
+    width: 40px; height: 40px;
+    border: 4px solid var(--line);
+    border-top: 4px solid var(--brand2);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 
@@ -612,13 +630,23 @@
         <span>Total</span>
         <b id="cartTotal">KSh 0</b>
       </div>
-      <button class="checkout" id="checkoutBtn">Checkout (demo)</button>
+      <div style="margin-bottom: 15px;">
+    <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 5px;">Receipt Email</label>
+    <input type="email" id="checkout-email" placeholder="your@email.com" 
+           style="width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--line); color: white; border-radius: 12px;">
+</div>
+      <button onclick="payWithPaystack()" class="btn btnPrimary" style="width:100%; margin-top:15px;">
+    Secure Checkout
+</button>
       <div class="small" style="margin-top:10px; color:var(--muted);">
-        Replace this with Stripe / M-Pesa later.
+        <div id="paymentLoading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p style="margin-top:15px;">Verifying Payment...</p>
+</div>
       </div>
     </div>
   </aside>
-
+<script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
  // 1. Function to open the pop-up
 function openMembershipModal() {
@@ -1151,6 +1179,77 @@ async function handleFormSubmit(event, webhookUrl) {
         btn.innerText = "Submit";
         btn.disabled = false;
     }
+}
+// 1. Keep this function separate so it's clean
+// 1. Move sendOrderToRobot OUTSIDE so it is accessible and clean
+async function sendOrderToRobot(ref, amount, email, items) {
+    try {
+        await fetch('https://hook.us2.make.com/ra52o56mi4dadoxg7nyxpe5q3w74awq1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                status: "success", // Matches the Make.com filter we set up
+                orderNumber: ref,
+                totalPrice: amount,
+                customerEmail: email,
+                items: items,
+                date: new Date().toLocaleString()
+            })
+        });
+    } catch (err) {
+        console.error("Robot connection error:", err);
+    }
+}
+
+// 2. The Updated Payment Function
+function payWithPaystack() {
+    const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const customerEmail = document.getElementById('checkout-email').value;
+
+    if (!customerEmail || !customerEmail.includes('@')) {
+        alert("Please enter a valid email address for your receipt.");
+        return;
+    }
+
+    if (total === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    // CRITICAL: Define itemsList here, before the cart is cleared
+    const itemsList = state.cart.map(i => `${i.name} (x${i.qty})`).join(', ');
+
+    let handler = PaystackPop.setup({
+        key: 'pk_test_fe47485fc5617d1f028a2e5591cd701767724506', 
+        email: customerEmail,
+        amount: total * 100, 
+        currency: 'KES',
+        ref: 'OT_' + Math.floor((Math.random() * 1000000000) + 1),
+        channels: ['card', 'mpesa', 'bank_transfer'], 
+        
+        onClose: function() {
+            alert('Payment window closed.');
+        },
+        
+        callback: function(response) {
+            // Show the loading overlay
+            document.getElementById('paymentLoading').style.display = 'flex';
+            
+            // Send data to the robot
+            sendOrderToRobot(response.reference, total, customerEmail, itemsList).then(() => {
+                document.getElementById('paymentLoading').style.display = 'none';
+                alert('Payment Received! Your order is being processed.');
+                
+                // Clear cart after robot confirms receipt
+                state.cart = [];
+                renderCart();
+                closeCart();
+            });
+        }
+    });
+
+    // FIX: Moved openIframe OUTSIDE the setup object's brackets
+    handler.openIframe();
 }
 </script>
 </body>
