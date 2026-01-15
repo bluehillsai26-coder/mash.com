@@ -455,7 +455,7 @@
         <span>Weekly offers, free gifts, sign up today.</span>
     </div>
     
-    <div class="stat" onclick="handlePreOrder()" style="cursor:pointer;">
+    <div class="stat" onclick="openModal('preOrderModal')" style="cursor:pointer;">
         <b>Pre-order</b>
         <span>Want custom finds? Pre-order now at Macharia.co</span>
     </div>
@@ -661,24 +661,55 @@ document.getElementById('membershipForm')?.addEventListener('submit', async func
     }
 });
 
-// Function for Pre-orders (Custom Find, Name, Phone)
+// 1. Updated Pre-order function: Opens the Modal instead of using Prompts
 function handlePreOrder() {
-    const customItem = prompt("What custom find are you looking for? (Describe the item):");
-    if (!customItem) return;
+    document.getElementById('preOrderModal').style.display = 'flex';
+}
 
-    const userName = prompt("Please enter your name:");
-    if (!userName) return;
-
-    const userPhone = prompt("Enter your phone number for the order update:");
-    if (!userPhone) return;
-
-    // Inform user of the confirmation text
-    alert(`Thank you, ${userName}!\n\nYour request for "${customItem}" has been received. You will get a confirmation text for your order on ${userPhone} shortly.`);
+// 2. Add this "Messenger" function to handle the Pre-Order Form Submission
+async function handleFormSubmit(event, webhookUrl) {
+    event.preventDefault(); 
+    const form = event.target;
+    const btn = form.querySelector('button');
     
+    // This grabs the Name, Item, and Phone from your form
+    const formData = Object.fromEntries(new FormData(form));
+
+    btn.innerText = "Sending...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            alert("Success! Your pre-order request has been received.");
+            document.getElementById('preOrderModal').style.display = 'none';
+            form.reset();
+        } else {
+            alert("The server is busy. Please try again.");
+        }
+    } catch (err) {
+        alert("Check your internet connection.");
+    } finally {
+        btn.innerText = "Submit Request";
+        btn.disabled = false;
+    }
+}
+
+// 3. Add this helper to close the modal if you click outside of it
+function closeModal(e, id) {
+    if (e.target.id === id) {
+        document.getElementById(id).style.display = 'none';
+    }
+}
     // Optional: Open WhatsApp with the pre-filled details
     // const msg = encodeURIComponent(`Pre-order Request\nName: ${userName}\nItem: ${customItem}\nPhone: ${userPhone}`);
     // window.open(`https://wa.me/254700200234?text=${msg}`, '_blank');
-}
+
   // ===== 1. CURRENCY & FORMATTING =====
   const fmt = (n) => {
     const v = Math.round(Number(n) || 0);
