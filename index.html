@@ -961,11 +961,6 @@ function renderCategories(){
     `).join('');
 }
 
-function selectCategory(cat) {
-    state.category = cat;
-    document.getElementById("category").value = cat;
-    window.location.hash = "#shop";
-}
 
 function selectCategory(cat) {
     // 1. Set the internal state to the chosen category
@@ -980,6 +975,14 @@ function selectCategory(cat) {
     
     // 4. Switch from the Categories page to the Shop page
     window.location.hash = "#shop";
+}
+
+function initCategoriesSelect(){
+    const sel = document.getElementById("category");
+    if(!sel) return;
+    const cats = [...new Set(PRODUCTS.map(p => p.category))].sort();
+    sel.innerHTML = `<option value="all">All</option>` + 
+        cats.map(c => `<option value="${c}">${c}</option>`).join('');
 }
 // ==========================================
 // PART 5: PAYSTACK & ROBOT
